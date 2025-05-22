@@ -10,11 +10,18 @@ const sanitizeText = (input: string): string => {
 
 export async function POST(req: NextRequest) {
   try {
-    const { text, isGeneral, questionnaireCount } = await req.json();
+    const { text, isGeneral, questionnaireCount, passKey } = await req.json();
 
     if (typeof questionnaireCount === 'number' && questionnaireCount >= 20) {
       return NextResponse.json(
         { error: 'You have reached the maximum limit of 20 questionnaires.' },
+        { status: 403 }
+      );
+    }
+
+    if(passKey !== process.env.PASSKEY){
+      return NextResponse.json(
+        { error: 'Invalid passkey' },
         { status: 403 }
       );
     }

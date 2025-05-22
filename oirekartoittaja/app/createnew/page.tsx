@@ -4,6 +4,7 @@ import { useState } from 'react';
 
 export default function CreateNewPage() {
   const [inputValue, setInputValue] = useState<string>('');
+  const [passKey, setPassKey] = useState<string>('');
   const [text, setText] = useState('');
   const [error, setError] = useState('');
   const [success, setSuccess] = useState('');
@@ -25,7 +26,7 @@ export default function CreateNewPage() {
       const res = await fetch('/api/createquestionnaire', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ text: inputValue, isGeneral, questionnaireCount }),
+        body: JSON.stringify({ text: inputValue, isGeneral, questionnaireCount, passKey }),
       });
   
       const result = await res.json();
@@ -80,6 +81,13 @@ export default function CreateNewPage() {
             <p>Oirespesifi kysely</p>
           </label>
         </div>
+
+        <textarea
+          className="centered-box"
+          value={passKey}
+          onChange={(e) => setPassKey(e.target.value)}
+          placeholder="Kirjoita tähän saamasi pääsyavain"
+        />
 
         <button className="create-button" type="submit" disabled={loading}>
           Luo uusi oirekysely
