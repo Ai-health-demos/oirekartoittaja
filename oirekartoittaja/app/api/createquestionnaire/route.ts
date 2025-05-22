@@ -2,8 +2,6 @@ import { NextRequest, NextResponse } from 'next/server';
 import { generateMedicalQuestionnaire } from '@/app/lib/generateMedicalQuestionnaire';
 import { medicalQuestionnaireSchema } from '@/app/schema/schema';
 import { medicalQuestionnaireSchemaNew } from '@/app/schema/shcema2';
-import path from 'path';
-import fs from 'fs/promises';
 
 // Sanitize input preserving Nordic characters
 const sanitizeText = (input: string): string => {
