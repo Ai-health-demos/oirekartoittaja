@@ -5,6 +5,7 @@ import styles from '@/app/styles/Home.module.css';
 import compStyles from '@/app/styles/Conversation.module.css';
 import Conversation from './components/Conversation4';
 import { useState, useEffect } from 'react';
+import { useRouter } from 'next/navigation';
 
 interface StoredQuestionnaire {
   key: string;
@@ -14,6 +15,7 @@ interface StoredQuestionnaire {
 export default function Home() {
   const [questionnaires, setQuestionnaires] = useState<StoredQuestionnaire[]>([]);
   const [selected, setSelected] = useState<StoredQuestionnaire | null>(null);
+  const router = useRouter();
 
   useEffect(() => {
     const items: StoredQuestionnaire[] = [];
@@ -31,7 +33,6 @@ export default function Home() {
         }
       }
     }
-    // Sort newest first
     items.sort((a, b) => (b.key > a.key ? 1 : -1));
     setQuestionnaires(items);
   }, []);
@@ -45,20 +46,34 @@ export default function Home() {
         <h1 className={styles.gradient_title}>Oirekartoittaja</h1>
 
         {!selected ? (
-          <>
-            <p className={styles.subtitle}>Valitse tallennettu kysely listasta</p>
-            <div className={compStyles.buttonStack}>
-              {questionnaires.map((item) => (
-                <button
-                  key={item.key}
-                  onClick={() => setSelected(item)}
-                  className={compStyles.gradient_button}
-                >
-                  {item.key}
-                </button>
-              ))}
+          questionnaires.length === 0 ? (
+            <div className={compStyles.emptyState}>
+              <p className={styles.subtitle}>
+                Et ole luonut vielä kyselyjä, klikkaa tästä aloittaaksesi
+              </p>
+              <button
+                className={compStyles.gradient_button}
+                onClick={() => router.push('/createnew')}
+              >
+                Luo uusi kysely
+              </button>
             </div>
-          </>
+          ) : (
+            <>
+              <p className={styles.subtitle}>Valitse tallennettu kysely listasta</p>
+              <div className={compStyles.buttonStack}>
+                {questionnaires.map((item) => (
+                  <button
+                    key={item.key}
+                    onClick={() => setSelected(item)}
+                    className={compStyles.gradient_button}
+                  >
+                    {item.key}
+                  </button>
+                ))}
+              </div>
+            </>
+          )
         ) : (
           <div className={styles.selectedContainer}>
             <button
@@ -68,13 +83,6 @@ export default function Home() {
               ← Takaisin
             </button>
             <Conversation file={selected} />
-
-            {/* <div className={compStyles.conversationBox}>
-              <h2>{selected.key}</h2>
-              <pre style={{ whiteSpace: 'pre-wrap', wordBreak: 'break-word' }}>
-                {JSON.stringify(selected.data, null, 2)}
-              </pre>
-            </div> */}
           </div>
         )}
       </main>
