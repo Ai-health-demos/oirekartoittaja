@@ -1,34 +1,40 @@
 'use client';
+
 import Head from 'next/head';
 import styles from '@/app/styles/Home.module.css';
 import compStyles from '@/app/styles/Conversation.module.css';
-import { useState, useEffect } from 'react';
 import Conversation from './components/Conversation4';
+import { useState, useEffect } from 'react';
 
-interface QuestionnaireFolder {
-  folder: string;
-  files: string[];
-}
-
-interface ClickParameters {
-    folder: string,
-    fileName: string
+interface StoredQuestionnaire {
+  key: string;
+  data: any;
 }
 
 export default function Home() {
-  const [selectedFile, setSelectedFile] = useState<{ folder: string, fileName: string } | null>(null);
-  const [questionnaires, setQuestionnaires] = useState<QuestionnaireFolder[]>([]);
+  const [questionnaires, setQuestionnaires] = useState<StoredQuestionnaire[]>([]);
+  const [selected, setSelected] = useState<StoredQuestionnaire | null>(null);
 
   useEffect(() => {
-    fetch('/questionnaires/api')
-      .then((res) => res.json())
-      .then(setQuestionnaires)
-      .catch(console.error);
+    const items: StoredQuestionnaire[] = [];
+    for (let i = 0; i < localStorage.length; i++) {
+      const key = localStorage.key(i);
+      if (key && key.startsWith('questionnaire_')) {
+        const raw = localStorage.getItem(key);
+        if (raw) {
+          try {
+            const data = JSON.parse(raw);
+            items.push({ key, data });
+          } catch (err) {
+            console.error(`Failed to parse questionnaire ${key}`);
+          }
+        }
+      }
+    }
+    // Sort newest first
+    items.sort((a, b) => (b.key > a.key ? 1 : -1));
+    setQuestionnaires(items);
   }, []);
-
-  const handleClick = (clickObject : ClickParameters) => {
-    setSelectedFile(clickObject);
-  };
 
   return (
     <>
@@ -37,35 +43,38 @@ export default function Home() {
       </Head>
       <main className={styles.mainLayout}>
         <h1 className={styles.gradient_title}>Oirekartoittaja</h1>
-        {!selectedFile ? (
+
+        {!selected ? (
           <>
-            <p className={styles.subtitle}>Valitse listasta kysely ja testaa</p>
-            {questionnaires.map((folder) => (
-              <div key={folder.folder}>
-                <h2 className={styles.subtitle}>{folder.folder}</h2>
-                <div className={compStyles.buttonStack}>
-                  {folder.files.map((file) => (
-                    <button
-                      key={file}
-                      onClick={() => handleClick({ folder: folder.folder, fileName: file })}
-                      className={compStyles.gradient_button}
-                    >
-                      {file}
-                    </button>
-                  ))}
-                </div>
-              </div>
-            ))}
+            <p className={styles.subtitle}>Valitse tallennettu kysely listasta</p>
+            <div className={compStyles.buttonStack}>
+              {questionnaires.map((item) => (
+                <button
+                  key={item.key}
+                  onClick={() => setSelected(item)}
+                  className={compStyles.gradient_button}
+                >
+                  {item.key}
+                </button>
+              ))}
+            </div>
           </>
         ) : (
           <div className={styles.selectedContainer}>
             <button
               className={compStyles.gradient_button}
-              onClick={() => setSelectedFile(null)}
+              onClick={() => setSelected(null)}
             >
               ← Takaisin
             </button>
-            <Conversation file={selectedFile} />
+            <Conversation file={selected} />
+
+            {/* <div className={compStyles.conversationBox}>
+              <h2>{selected.key}</h2>
+              <pre style={{ whiteSpace: 'pre-wrap', wordBreak: 'break-word' }}>
+                {JSON.stringify(selected.data, null, 2)}
+              </pre>
+            </div> */}
           </div>
         )}
       </main>

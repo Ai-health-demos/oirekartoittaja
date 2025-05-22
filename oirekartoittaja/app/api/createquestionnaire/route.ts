@@ -12,7 +12,14 @@ const sanitizeText = (input: string): string => {
 
 export async function POST(req: NextRequest) {
   try {
-    const { text, isGeneral } = await req.json();
+    const { text, isGeneral, questionnaireCount } = await req.json();
+
+    if (typeof questionnaireCount === 'number' && questionnaireCount >= 20) {
+      return NextResponse.json(
+        { error: 'You have reached the maximum limit of 20 questionnaires.' },
+        { status: 403 }
+      );
+    }
 
     if (typeof text !== 'string') {
       return NextResponse.json({ error: 'Text parameter is required.' }, { status: 400 });
@@ -39,24 +46,14 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: 'Generated object failed validation.' }, { status: 400 });
     }
 
-    const folderPath = path.join(
-      process.cwd(),
-      'questionnaires',
-      typeOfQuestionnaire === 'overallHealth' ? 'general' : 'symptom'
-    );
-
-    await fs.mkdir(folderPath, { recursive: true });
-
-    const filePath = path.join(folderPath, `${sanitizedText}-${Date.now()}.json`);
-
-    await fs.writeFile(filePath, JSON.stringify(parsed.data, null, 2), 'utf-8');
-
+    // No longer saving to file — return directly
     return NextResponse.json({
-      message: 'Questionnaire saved successfully.',
-      filePath,
+      message: 'Questionnaire generated and stored in localStorage.',
+      generatedQuestionnaire: parsed.data,
     });
   } catch (error) {
     console.error(error);
     return NextResponse.json({ error: 'Internal server error.' }, { status: 500 });
   }
 }
+

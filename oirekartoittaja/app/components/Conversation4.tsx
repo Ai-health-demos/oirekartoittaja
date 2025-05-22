@@ -20,7 +20,12 @@ interface QA {
 }
 
 interface Props {
-    file: { folder: string; fileName: string };
+  file: {
+    key: string;
+    data: {
+      questions: Question[];
+    };
+  };
 }
 
 export default function Conversation({ file }: Props) {
@@ -32,33 +37,25 @@ export default function Conversation({ file }: Props) {
   const containerRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    if (!file) return;
-  
-    fetch(`/api/questionnaires/${file.folder}/${file.fileName}`)
-      .then((res) => res.json())
-      .then((data) => {
-        setQuestions(data.questions || []);
-        setConversation([{ question: data.questions[0], path: data.questions[0].id }]);
-      })
-      .catch(console.error);
+    if (!file?.data?.questions) return;
+    const qs = file.data.questions;
+    setQuestions(qs);
+    setConversation([{ question: qs[0], path: qs[0].id }]);
   }, [file]);
 
   const handleAnswer = (answer: Answer, index: number) => {
     const updated = conversation.slice(0, index + 1);
     updated[index].selectedAnswer = answer.text;
-  
+
     if (answer.followUpQuestions?.length) {
-      // Store all remaining follow-ups except the first in state
       const [first, ...rest] = answer.followUpQuestions;
       updated.push({ question: first, path: `${updated[index].path}.${first.id}` });
       setPendingFollowUps(rest);
     } else if (pendingFollowUps.length) {
-      // Take next from the pending list
       const [next, ...rest] = pendingFollowUps;
       updated.push({ question: next, path: `${updated[index].path}.${next.id}` });
       setPendingFollowUps(rest);
     } else {
-      // Proceed to the next root-level question
       const rootIndex = questions.findIndex(q => q.id === conversation[0].question.id);
       const nextIndex = rootIndex + updated.filter(q => !q.path.includes('.')).length;
       const next = questions[nextIndex];
@@ -66,10 +63,10 @@ export default function Conversation({ file }: Props) {
         updated.push({ question: next, path: next.id });
       }
     }
-  
+
     setConversation(updated);
     setShowSummary(false);
-  };  
+  };
 
   const handleBack = () => {
     const updated = [...conversation];

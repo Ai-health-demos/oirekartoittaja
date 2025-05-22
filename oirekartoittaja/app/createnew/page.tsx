@@ -14,13 +14,18 @@ export default function CreateNewPage() {
     e.preventDefault();
     setError('');
     setSuccess('');
-    setLoading(true); // Start loading
+    setLoading(true);
   
     try {
+      // Step 1: Get count of questionnaires in localStorage
+      const storedKeys = Object.keys(localStorage).filter(key => key.startsWith('questionnaire_'));
+      const questionnaireCount = storedKeys.length;
+  
+      // Step 2: Send count with request
       const res = await fetch('/api/createquestionnaire', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ text: inputValue, isGeneral }),
+        body: JSON.stringify({ text: inputValue, isGeneral, questionnaireCount }),
       });
   
       const result = await res.json();
@@ -28,17 +33,18 @@ export default function CreateNewPage() {
       if (!res.ok) {
         setError(result.error || 'An error occurred');
       } else {
+        // Step 3: Save to localStorage
+        const newKey = `questionnaire_${Date.now()}`;
+        localStorage.setItem(newKey, JSON.stringify(result.generatedQuestionnaire));
         setSuccess(result.message);
         setInputValue('');
       }
     } catch (err) {
       setError('An unexpected error occurred');
-      setLoading(false);
     } finally {
-      setLoading(false); // Stop loading
+      setLoading(false);
     }
   };
-  
 
   return (
     <div>

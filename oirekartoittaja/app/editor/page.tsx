@@ -2,7 +2,7 @@
 
 import React, { useEffect, useState } from 'react';
 import Link from 'next/link';
-import styles from './QuestionnaireEditor.module.css';
+import styles from '@/app/styles/QuestionEditor.module.css';
 
 interface StoredQuestionnaire {
   key: string;

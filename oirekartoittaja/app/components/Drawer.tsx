@@ -20,7 +20,7 @@ const Drawer: React.FC<DrawerProps> = ({ toggleDrawer }) => {
             <Link href="/createnew" onClick={toggleDrawer}>Luo uusi oirekysely</Link>
           </li>
           <li>
-            <Link href="/questionnaires" onClick={toggleDrawer}>Kaikki oirekyselyt</Link>
+            <Link href="/editor" onClick={toggleDrawer}>Oirekyselymuokkaaja</Link>
           </li>
         </ul>
       </nav>
