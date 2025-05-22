@@ -1,0 +1,116 @@
+.container {
+    display: flex;
+    height: 100vh;
+    background-color: #f7f9fc;
+  }
+  
+  .container h2{
+    margin-bottom: 10px;
+  }
+
+  .sidebar {
+    margin-left: 60px;
+    width: 220px;
+    background: #fff;
+    padding: 20px;
+    border-right: 1px solid #ddd;
+  }
+  
+  .mainContent {
+    flex-grow: 1;
+    padding: 20px;
+    overflow-y: auto;
+  }
+  
+  .questionBlock {
+    background: #fff;
+    border-radius: 8px;
+    padding: 15px;
+    margin-bottom: 10px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+  }
+  
+  .questionInput {
+    font-size: 16px;
+    width: 100%;
+    border: none;
+    padding: 8px;
+    border-bottom: 2px solid #ccc;
+    margin-bottom: 10px;
+  }
+  
+  .answerBlock {
+    display: flex;
+    align-items: center;
+    margin-left: 10px;
+    padding-bottom: 5px;
+  }
+  
+  .answerInput {
+    flex: 1;
+    padding: 6px;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+    margin-right: 5px;
+  }
+  
+  .addBtn, .saveBtn {
+    margin: 10px 0;
+    margin-left: 10px;
+    margin-bottom: 20px;
+    padding: 8px 16px;
+    background-color: #236823;
+    color: white;
+    border-radius: 6px;
+    cursor: pointer;
+    border: none;
+  }
+
+  .saveBtn {
+    padding: 20px;
+  }
+  
+  .addBtnSmall {
+    margin-left: 5px;
+    padding: 4px 8px;
+    background-color: #246F75;
+    color: white;
+    border-radius: 4px;
+    cursor: pointer;
+    border: none;
+    font-size: 12px;
+  }
+  
+  .deleteBtn, .deleteBtnSmall {
+    padding: 4px 8px;
+    background-color: #072110;
+    color: white;
+    border-radius: 4px;
+    cursor: pointer;
+    border: none;
+    margin-left: 5px;
+  }
+  
+  .deleteBtn {
+    margin-bottom: 10px;
+    padding: 6px 12px;
+    font-size: 14px;
+  }
+  
+  .loading {
+    padding: 20px;
+    text-align: center;
+  }
+  
+  .followUpBlock {
+    background-color: #eef6ff;
+    border-left: 5px solid #3182ce;
+  }
+  
+  .followUpLabel {
+    font-size: 13px;
+    color: #205080;
+    margin-bottom: 8px;
+    font-style: italic;
+  }
+  

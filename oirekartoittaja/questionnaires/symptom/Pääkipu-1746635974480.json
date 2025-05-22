@@ -1,0 +1,141 @@
+{
+  "questionnaireType": "symptomFocused",
+  "topic": "Pääkipu",
+  "questions": [
+    {
+      "id": "1",
+      "question": "Missä kohtaa päätä kipu tuntuu eniten?",
+      "answers": [
+        {
+          "text": "Otsalla"
+        },
+        {
+          "text": "Ohimoilla"
+        },
+        {
+          "text": "Takaraivolla"
+        },
+        {
+          "text": "Koko päässä"
+        },
+        {
+          "text": "Toisella puolella päätä"
+        }
+      ]
+    },
+    {
+      "id": "2",
+      "question": "Millainen kipu on?",
+      "answers": [
+        {
+          "text": "Särkevä"
+        },
+        {
+          "text": "Jomottava"
+        },
+        {
+          "text": "Pistävä"
+        },
+        {
+          "text": "Puristava"
+        },
+        {
+          "text": "Sähköiskumainen"
+        }
+      ]
+    },
+    {
+      "id": "3",
+      "question": "Kuinka voimakasta kipu on?",
+      "answers": [
+        {
+          "text": "Lievää"
+        },
+        {
+          "text": "Kohtalaista"
+        },
+        {
+          "text": "Voimakasta"
+        },
+        {
+          "text": "Sietämätöntä"
+        }
+      ]
+    },
+    {
+      "id": "4",
+      "question": "Kuinka kauan kipu on kestänyt?",
+      "answers": [
+        {
+          "text": "Alle tunnin"
+        },
+        {
+          "text": "Useita tunteja"
+        },
+        {
+          "text": "Päiviä"
+        },
+        {
+          "text": "Viikkoja"
+        }
+      ]
+    },
+    {
+      "id": "5",
+      "question": "Onko kipuun liittynyt muita oireita?",
+      "answers": [
+        {
+          "text": "Pahoinvointia"
+        },
+        {
+          "text": "Näköhäiriöitä"
+        },
+        {
+          "text": "Huimausta"
+        },
+        {
+          "text": "Valonarkuutta"
+        },
+        {
+          "text": "Ei muita oireita"
+        }
+      ]
+    },
+    {
+      "id": "6",
+      "question": "Paheneeko kipu liikkeessä tai rasituksessa?",
+      "answers": [
+        {
+          "text": "Kyllä"
+        },
+        {
+          "text": "Ei"
+        }
+      ]
+    },
+    {
+      "id": "7",
+      "question": "Onko sinulla aiemmin ollut samanlaista päänsärkyä?",
+      "answers": [
+        {
+          "text": "Kyllä"
+        },
+        {
+          "text": "Ei"
+        }
+      ]
+    },
+    {
+      "id": "8",
+      "question": "Onko sinulla perussairauksia (esim. migreeni, verenpainetauti)?",
+      "answers": [
+        {
+          "text": "Kyllä"
+        },
+        {
+          "text": "Ei"
+        }
+      ]
+    }
+  ]
+}

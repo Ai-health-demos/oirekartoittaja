@@ -1,0 +1,160 @@
+{
+  "questionnaireType": "symptomFocused",
+  "topic": "Jalkavaivat",
+  "questions": [
+    {
+      "id": "1",
+      "question": "Missä kohtaa jalkaa vaiva tuntuu eniten?",
+      "answers": [
+        {
+          "text": "Varpaissa",
+          "followUpQuestions": [
+            {
+              "id": "1.1",
+              "question": "Onko varpaissa turvotusta tai punoitusta?",
+              "answers": [
+                {
+                  "text": "Kyllä"
+                },
+                {
+                  "text": "Ei"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "text": "Jalkapohjassa",
+          "followUpQuestions": [
+            {
+              "id": "1.2",
+              "question": "Tuntuuko kipua kävellessä?",
+              "answers": [
+                {
+                  "text": "Kyllä"
+                },
+                {
+                  "text": "Ei"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "text": "Kantapäässä",
+          "followUpQuestions": [
+            {
+              "id": "1.3",
+              "question": "Onko kipu pahinta aamulla?",
+              "answers": [
+                {
+                  "text": "Kyllä"
+                },
+                {
+                  "text": "Ei"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "text": "Nilkassa",
+          "followUpQuestions": [
+            {
+              "id": "1.4",
+              "question": "Onko nilkka turvonnut?",
+              "answers": [
+                {
+                  "text": "Kyllä"
+                },
+                {
+                  "text": "Ei"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "text": "Sääressä",
+          "followUpQuestions": [
+            {
+              "id": "1.5",
+              "question": "Onko kipu alkanut äkillisesti?",
+              "answers": [
+                {
+                  "text": "Kyllä"
+                },
+                {
+                  "text": "Ei"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "text": "Useassa kohdassa"
+        }
+      ]
+    },
+    {
+      "id": "2",
+      "question": "Millainen vaiva on?",
+      "answers": [
+        {
+          "text": "Kipu"
+        },
+        {
+          "text": "Turvotus"
+        },
+        {
+          "text": "Puutuminen"
+        },
+        {
+          "text": "Kylmyys"
+        },
+        {
+          "text": "Muu"
+        }
+      ]
+    },
+    {
+      "id": "3",
+      "question": "Kuinka kauan vaiva on kestänyt?",
+      "answers": [
+        {
+          "text": "Alle viikon"
+        },
+        {
+          "text": "1-4 viikkoa"
+        },
+        {
+          "text": "Yli kuukauden"
+        }
+      ]
+    },
+    {
+      "id": "4",
+      "question": "Paheneeko vaiva rasituksessa?",
+      "answers": [
+        {
+          "text": "Kyllä"
+        },
+        {
+          "text": "Ei"
+        }
+      ]
+    },
+    {
+      "id": "5",
+      "question": "Onko sinulla perussairauksia (esim. diabetes, verenkiertohäiriöt)?",
+      "answers": [
+        {
+          "text": "Kyllä"
+        },
+        {
+          "text": "Ei"
+        }
+      ]
+    }
+  ]
+}

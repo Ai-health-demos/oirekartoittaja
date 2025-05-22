@@ -1,0 +1,156 @@
+{
+  "questionnaireType": "symptomFocused",
+  "topic": "Silmäsairaudet",
+  "questions": [
+    {
+      "id": "q1",
+      "question": "Onko silmissäsi kipua?",
+      "answers": [
+        {
+          "text": "Kyllä",
+          "followUpQuestionIds": [
+            "q2"
+          ]
+        },
+        {
+          "text": "Ei"
+        }
+      ]
+    },
+    {
+      "id": "q2",
+      "question": "Millainen kipu on?",
+      "answers": [
+        {
+          "text": "Pistävä"
+        },
+        {
+          "text": "Jomottava"
+        },
+        {
+          "text": "Polttava"
+        },
+        {
+          "text": "Painava"
+        }
+      ]
+    },
+    {
+      "id": "q3",
+      "question": "Onko näkösi heikentynyt?",
+      "answers": [
+        {
+          "text": "Kyllä",
+          "followUpQuestionIds": [
+            "q4"
+          ]
+        },
+        {
+          "text": "Ei"
+        }
+      ]
+    },
+    {
+      "id": "q4",
+      "question": "Näetkö sumeasti vai kaksoiskuvia?",
+      "answers": [
+        {
+          "text": "Sumeasti"
+        },
+        {
+          "text": "Kaksoiskuvia"
+        },
+        {
+          "text": "Molempia"
+        }
+      ]
+    },
+    {
+      "id": "q5",
+      "question": "Onko silmissäsi punoitusta?",
+      "answers": [
+        {
+          "text": "Kyllä"
+        },
+        {
+          "text": "Ei"
+        }
+      ]
+    },
+    {
+      "id": "q6",
+      "question": "Onko silmissäsi kutinaa tai ärsytystä?",
+      "answers": [
+        {
+          "text": "Kyllä"
+        },
+        {
+          "text": "Ei"
+        }
+      ]
+    },
+    {
+      "id": "q7",
+      "question": "Onko silmissäsi vuotoa?",
+      "answers": [
+        {
+          "text": "Kyllä",
+          "followUpQuestionIds": [
+            "q8"
+          ]
+        },
+        {
+          "text": "Ei"
+        }
+      ]
+    },
+    {
+      "id": "q8",
+      "question": "Millainen vuoto on?",
+      "answers": [
+        {
+          "text": "Vetistä"
+        },
+        {
+          "text": "Rähmää"
+        },
+        {
+          "text": "Märkää"
+        }
+      ]
+    },
+    {
+      "id": "q9",
+      "question": "Onko sinulla valoherkkyyttä?",
+      "answers": [
+        {
+          "text": "Kyllä"
+        },
+        {
+          "text": "Ei"
+        }
+      ]
+    },
+    {
+      "id": "q10",
+      "question": "Onko sinulla ollut silmävammoja tai leikkauksia?",
+      "answers": [
+        {
+          "text": "Kyllä"
+        },
+        {
+          "text": "Ei"
+        }
+      ]
+    },
+    {
+      "id": "7f2b2bcb-ee62-451d-926b-667b431e9209",
+      "question": "Testikyssäri",
+      "answers": [
+        {
+          "text": "Testivastaus"
+        }
+      ]
+    }
+  ]
+}

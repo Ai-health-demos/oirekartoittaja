@@ -1,0 +1,31 @@
+[
+    {
+      "id": "q1",
+      "question": "Do you experience headaches?",
+      "answers": [
+        {
+          "text": "Yes",
+          "followUpQuestions": [
+            {
+              "id": "q1-1",
+              "question": "How frequently?",
+              "answers": [
+                { "text": "Daily" },
+                { "text": "Weekly" },
+                { "text": "Monthly" }
+              ]
+            },
+            {
+              "id": "q1-2",
+              "question": "Are they severe?",
+              "answers": [{ "text": "Yes" }, { "text": "No" }]
+            }
+          ]
+        },
+        { "text": "No" }
+      ]
+    }
+  ]
+
+  
+  

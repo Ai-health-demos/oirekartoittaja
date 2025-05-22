@@ -1,0 +1,144 @@
+{
+  "questionnaireType": "overallHealth",
+  "topic": "Yleisen voinnin kysely",
+  "questions": [
+    {
+      "id": "q1",
+      "question": "Miten arvioisit yleistä terveydentilaasi?",
+      "answers": [
+        {
+          "text": "Erinomainen"
+        },
+        {
+          "text": "Hyvä"
+        },
+        {
+          "text": "Kohtalainen"
+        },
+        {
+          "text": "Huono"
+        }
+      ]
+    },
+    {
+      "id": "q2",
+      "question": "Onko sinulla kipuja?",
+      "answers": [
+        {
+          "text": "Ei lainkaan"
+        },
+        {
+          "text": "Vähän"
+        },
+        {
+          "text": "Kohtalaisesti"
+        },
+        {
+          "text": "Paljon"
+        }
+      ]
+    },
+    {
+      "id": "q3",
+      "question": "Onko sinulla univaikeuksia?",
+      "answers": [
+        {
+          "text": "Ei lainkaan"
+        },
+        {
+          "text": "Harvoin"
+        },
+        {
+          "text": "Usein"
+        },
+        {
+          "text": "Jatkuvasti"
+        }
+      ]
+    },
+    {
+      "id": "q4",
+      "question": "Tunnetko itsesi väsyneeksi päivisin?",
+      "answers": [
+        {
+          "text": "Ei koskaan"
+        },
+        {
+          "text": "Harvoin"
+        },
+        {
+          "text": "Usein"
+        },
+        {
+          "text": "Jatkuvasti"
+        }
+      ]
+    },
+    {
+      "id": "q5",
+      "question": "Onko ruokahalusi muuttunut viime aikoina?",
+      "answers": [
+        {
+          "text": "Ei muutosta"
+        },
+        {
+          "text": "Vähentynyt"
+        },
+        {
+          "text": "Lisääntynyt"
+        }
+      ]
+    },
+    {
+      "id": "q6",
+      "question": "Onko sinulla ollut mielialan vaihteluita?",
+      "answers": [
+        {
+          "text": "Ei lainkaan"
+        },
+        {
+          "text": "Harvoin"
+        },
+        {
+          "text": "Usein"
+        },
+        {
+          "text": "Jatkuvasti"
+        }
+      ]
+    },
+    {
+      "id": "q7",
+      "question": "Onko sinulla hengitysvaikeuksia?",
+      "answers": [
+        {
+          "text": "Ei lainkaan"
+        },
+        {
+          "text": "Harvoin"
+        },
+        {
+          "text": "Usein"
+        },
+        {
+          "text": "Jatkuvasti"
+        }
+      ]
+    },
+    {
+      "id": "q8",
+      "question": "Onko sinulla ollut viime aikoina kuumetta?",
+      "answers": [
+        {
+          "text": "Ei lainkaan"
+        },
+        {
+          "text": "Kyllä, lievää"
+        },
+        {
+          "text": "Kyllä, korkeaa"
+        }
+      ]
+    }
+  ]
+}

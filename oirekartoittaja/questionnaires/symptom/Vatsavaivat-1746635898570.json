@@ -1,0 +1,165 @@
+{
+  "questionnaireType": "symptomFocused",
+  "topic": "Vatsavaivat",
+  "questions": [
+    {
+      "id": "1",
+      "question": "Missä vatsan alueella tunnet vaivaa?",
+      "answers": [
+        {
+          "text": "Ylävatsa",
+          "followUpQuestions": [
+            {
+              "id": "1.1",
+              "question": "Onko kipu jatkuvaa vai aaltoilevaa?",
+              "answers": [
+                {
+                  "text": "Jatkuvaa"
+                },
+                {
+                  "text": "Aaltoilevaa"
+                }
+              ]
+            },
+            {
+              "id": "1.2",
+              "question": "Pahentaako syöminen kipua?",
+              "answers": [
+                {
+                  "text": "Kyllä"
+                },
+                {
+                  "text": "Ei"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "text": "Alavatsa",
+          "followUpQuestions": [
+            {
+              "id": "1.3",
+              "question": "Säteileekö kipu muualle?",
+              "answers": [
+                {
+                  "text": "Kyllä"
+                },
+                {
+                  "text": "Ei"
+                }
+              ]
+            },
+            {
+              "id": "1.4",
+              "question": "Onko virtsaamisessa muutoksia?",
+              "answers": [
+                {
+                  "text": "Kyllä"
+                },
+                {
+                  "text": "Ei"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "text": "Koko vatsa"
+        },
+        {
+          "text": "Epätarkka/En osaa sanoa"
+        }
+      ]
+    },
+    {
+      "id": "2",
+      "question": "Millainen vatsavaiva on?",
+      "answers": [
+        {
+          "text": "Kipu"
+        },
+        {
+          "text": "Turvotus",
+          "followUpQuestions": [
+            {
+              "id": "530b82fb-6b3f-4914-aebe-cf9cdbb24fe2",
+              "question": "Uusi jatkokysymys testi",
+              "answers": [
+                {
+                  "text": "Uusi vastaus testi"
+                },
+                {
+                  "text": "Uusi vastaus"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "text": "Ripuli"
+        },
+        {
+          "text": "Ummetus"
+        },
+        {
+          "text": "Pahoinvointi"
+        },
+        {
+          "text": "Muu"
+        }
+      ]
+    },
+    {
+      "id": "3",
+      "question": "Kuinka kauan oireet ovat kestäneet?",
+      "answers": [
+        {
+          "text": "Alle 1 vrk"
+        },
+        {
+          "text": "1-7 vrk"
+        },
+        {
+          "text": "Yli viikon"
+        }
+      ]
+    },
+    {
+      "id": "4",
+      "question": "Onko sinulla kuumetta?",
+      "answers": [
+        {
+          "text": "Kyllä"
+        },
+        {
+          "text": "Ei"
+        }
+      ]
+    },
+    {
+      "id": "5",
+      "question": "Onko ulosteessa verta?",
+      "answers": [
+        {
+          "text": "Kyllä"
+        },
+        {
+          "text": "Ei"
+        }
+      ]
+    },
+    {
+      "id": "6",
+      "question": "Onko sinulla aiempia vatsavaivoja?",
+      "answers": [
+        {
+          "text": "Kyllä"
+        },
+        {
+          "text": "Ei"
+        }
+      ]
+    }
+  ]
+}

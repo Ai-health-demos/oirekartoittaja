@@ -1,0 +1,18 @@
+[
+    {
+      "id": 1,
+      "question": "What is your favorite color?",
+      "answers": ["Blue", "Green", "Red"]
+    },
+    {
+      "id": 2,
+      "question": "What's your favorite animal?",
+      "answers": ["Dog", "Cat", "Bird"]
+    },
+    {
+      "id": 3,
+      "question": "Pick a hobby",
+      "answers": ["Reading", "Traveling", "Gaming"]
+    }
+  ]
+  

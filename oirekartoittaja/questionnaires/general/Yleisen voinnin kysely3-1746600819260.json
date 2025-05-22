@@ -1,0 +1,167 @@
+{
+  "questionnaireType": "overallHealth",
+  "topic": "Yleisen voinnin kysely",
+  "questions": [
+    {
+      "id": "1",
+      "question": "Miten arvioisit yleistä vointiasi?",
+      "answers": [
+        {
+          "text": "Erittäin hyvä"
+        },
+        {
+          "text": "Hyvä"
+        },
+        {
+          "text": "Tyydyttävä"
+        },
+        {
+          "text": "Huono"
+        },
+        {
+          "text": "Erittäin huono"
+        }
+      ]
+    },
+    {
+      "id": "2",
+      "question": "Onko sinulla tällä hetkellä kipuja?",
+      "answers": [
+        {
+          "text": "Ei"
+        },
+        {
+          "text": "Kyllä",
+          "followUpQuestions": [
+            {
+              "id": "2a",
+              "question": "Missä kohtaa kehoa tunnet kipua?",
+              "answers": [
+                {
+                  "text": "Pää"
+                },
+                {
+                  "text": "Rinta"
+                },
+                {
+                  "text": "Vatsa"
+                },
+                {
+                  "text": "Selkä"
+                },
+                {
+                  "text": "Raajat"
+                },
+                {
+                  "text": "Muu"
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "3",
+      "question": "Oletko huomannut muutoksia painossasi viime kuukausina?",
+      "answers": [
+        {
+          "text": "Ei muutoksia"
+        },
+        {
+          "text": "Paino noussut"
+        },
+        {
+          "text": "Paino laskenut"
+        }
+      ]
+    },
+    {
+      "id": "4",
+      "question": "Onko sinulla ollut kuumetta viime aikoina?",
+      "answers": [
+        {
+          "text": "Ei"
+        },
+        {
+          "text": "Kyllä"
+        }
+      ]
+    },
+    {
+      "id": "5",
+      "question": "Koetko väsymystä tai uupumusta?",
+      "answers": [
+        {
+          "text": "En"
+        },
+        {
+          "text": "Kyllä, lievää"
+        },
+        {
+          "text": "Kyllä, voimakasta"
+        }
+      ]
+    },
+    {
+      "id": "6",
+      "question": "Onko sinulla hengitysvaikeuksia?",
+      "answers": [
+        {
+          "text": "Ei"
+        },
+        {
+          "text": "Kyllä"
+        }
+      ]
+    },
+    {
+      "id": "7",
+      "question": "Onko sinulla sydänoireita (esim. tykytystä, rintakipua)?",
+      "answers": [
+        {
+          "text": "Ei"
+        },
+        {
+          "text": "Kyllä"
+        }
+      ]
+    },
+    {
+      "id": "8",
+      "question": "Onko sinulla ollut ruoansulatusvaivoja?",
+      "answers": [
+        {
+          "text": "Ei"
+        },
+        {
+          "text": "Kyllä"
+        }
+      ]
+    },
+    {
+      "id": "9",
+      "question": "Onko sinulla ollut mielialan muutoksia?",
+      "answers": [
+        {
+          "text": "Ei"
+        },
+        {
+          "text": "Kyllä"
+        }
+      ]
+    },
+    {
+      "id": "10",
+      "question": "Onko sinulla muita huolia terveydestäsi?",
+      "answers": [
+        {
+          "text": "Ei"
+        },
+        {
+          "text": "Kyllä"
+        }
+      ]
+    }
+  ]
+}

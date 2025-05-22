@@ -1,0 +1,120 @@
+{
+  "questionnaireType": "symptomFocused",
+  "topic": "Ihosairaudet",
+  "questions": [
+    {
+      "id": "1",
+      "question": "Missä kohtaa kehoa ihottumaa esiintyy?",
+      "answers": [
+        {
+          "text": "Kasvot"
+        },
+        {
+          "text": "Kädet"
+        },
+        {
+          "text": "Jalat"
+        },
+        {
+          "text": "Vartalo"
+        },
+        {
+          "text": "Useassa paikassa"
+        }
+      ]
+    },
+    {
+      "id": "2",
+      "question": "Miltä ihottuma näyttää?",
+      "answers": [
+        {
+          "text": "Punoittava"
+        },
+        {
+          "text": "Rakkulainen"
+        },
+        {
+          "text": "Hilseilevä"
+        },
+        {
+          "text": "Kostea"
+        },
+        {
+          "text": "Kuiva"
+        }
+      ]
+    },
+    {
+      "id": "3",
+      "question": "Kutiseeko ihottuma?",
+      "answers": [
+        {
+          "text": "Kyllä"
+        },
+        {
+          "text": "Ei"
+        }
+      ]
+    },
+    {
+      "id": "4",
+      "question": "Milloin ihottuma alkoi?",
+      "answers": [
+        {
+          "text": "Alle viikko sitten"
+        },
+        {
+          "text": "1-4 viikkoa sitten"
+        },
+        {
+          "text": "Yli kuukausi sitten"
+        }
+      ]
+    },
+    {
+      "id": "5",
+      "question": "Onko sinulla muita oireita?",
+      "answers": [
+        {
+          "text": "Kuume"
+        },
+        {
+          "text": "Nivelkipu"
+        },
+        {
+          "text": "Turvotus"
+        },
+        {
+          "text": "Ei muita oireita"
+        }
+      ]
+    },
+    {
+      "id": "6",
+      "question": "Onko sinulla aiemmin ollut samanlaista ihottumaa?",
+      "answers": [
+        {
+          "text": "Kyllä"
+        },
+        {
+          "text": "Ei"
+        }
+      ]
+    },
+    {
+      "id": "7",
+      "question": "Onko suvussasi ihosairauksia?",
+      "answers": [
+        {
+          "text": "Kyllä"
+        },
+        {
+          "text": "Ei"
+        },
+        {
+          "text": "En tiedä"
+        }
+      ]
+    }
+  ]
+}
