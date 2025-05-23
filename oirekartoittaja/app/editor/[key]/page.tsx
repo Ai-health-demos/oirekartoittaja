@@ -231,7 +231,7 @@ const QuestionnaireEditor = () => {
   return (
     <div className={styles.container}>
       <nav className={styles.sidebar}>
-        <Link href="/questionnaires">← Takaisin listaan</Link>
+        <Link href="/editor">← Takaisin listaan</Link>
       </nav>
       <main className={styles.mainContent}>
         <h2>{questionnaire.topic}</h2>
