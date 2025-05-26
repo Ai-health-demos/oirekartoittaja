@@ -25,24 +25,27 @@ function Page() {
   const [loading, setLoading] = useState(false);
   const [result, setResult] = useState<ConversionResult | null>(null);
   const [error, setError] = useState<string | null>(null);
+  const [showHelp, setShowHelp] = useState(false);
 
-  const handleAdditionalFilesChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleAdditionalFilesChange = (
+    e: React.ChangeEvent<HTMLInputElement>
+  ) => {
     const files = e.target.files;
     if (files) {
       const newFiles = Array.from(files);
-      setAdditionalFiles(prev => [...prev, ...newFiles]);
+      setAdditionalFiles((prev) => [...prev, ...newFiles]);
     }
     // Reset the input to allow selecting the same files again if needed
-    e.target.value = '';
+    e.target.value = "";
   };
 
   const removeAdditionalFile = (index: number) => {
-    setAdditionalFiles(prev => prev.filter((_, i) => i !== index));
+    setAdditionalFiles((prev) => prev.filter((_, i) => i !== index));
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-      if (!mainFile) {
+    if (!mainFile) {
       setError("Valitse päätiedosto GraphML-muodossa");
       return;
     }
@@ -62,8 +65,8 @@ function Page() {
           formData.append("additional_files", file);
         });
       }
-      console.log('formdata', formData);
-      
+      console.log("formdata", formData);
+
       const response = await fetch("/api/python/v1/convert", {
         method: "POST",
         body: formData,
@@ -85,11 +88,11 @@ function Page() {
 
   const downloadResult = () => {
     if (!result) return;
-    
+
     let dataStr: string;
     let filename: string;
     let mimeType: string;
-    
+
     if (result.format === "text") {
       dataStr = result.content || "";
       filename = `${result.topic.replace(/\s+/g, "_")}_questionnaire.md`;
@@ -99,7 +102,7 @@ function Page() {
       filename = `${result.topic.replace(/\s+/g, "_")}_questionnaire.json`;
       mimeType = "application/json";
     }
-    
+
     const dataBlob = new Blob([dataStr], { type: mimeType });
     const url = URL.createObjectURL(dataBlob);
     const link = document.createElement("a");
@@ -110,28 +113,103 @@ function Page() {
   };
   return (
     <div className={styles.container}>
-      <div className={styles.card}>        <div className={styles.cardHeader}>
-          <h1 className={styles.title}>
-            📋 GraphML Muunnin
-          </h1>
+      <div className={styles.card}>
+        {" "}
+        <div className={styles.cardHeader}>
+          <h1 className={styles.title}>📋 GraphML Muunnin</h1>
           <p className={styles.subtitle}>
             Muunna yEd GraphML -kyselytiedostot JSON- tai teksti-muotoon
           </p>
         </div>
-        
+        {/* Help Section */}
+        <div className={styles.helpSection}>
+          <button
+            type="button"
+            onClick={() => setShowHelp(!showHelp)}
+            className={styles.helpButton}
+          >
+            {showHelp ? "📚 Piilota ohje" : "❓ Näytä muunnosprosessin ohje"}
+          </button>
+
+          {showHelp && (
+            <div className={styles.helpContent}>
+              <h3>🔄 GraphML-muunnosprosessi</h3>
+              <p>
+                Tämä työkalu muuntaa yEd:llä luodut GraphML-kyselytiedostot
+                JSON- tai Markdown-muotoon.
+              </p>
+
+              <h4>📁 Tiedostotyypit:</h4>
+              <ul>
+                <li>
+                  <strong>Päätiedosto:</strong> Pääkysely GraphML-muodossa
+                  (pakollinen)
+                </li>
+                <li>
+                  <strong>Lisätiedostot:</strong> Viitetiedostot, joihin
+                  päätiedosto linkittää (valinnainen)
+                </li>
+              </ul>
+
+              <h4>🔗 ALKU/LOPPU-viittaukset:</h4>
+              <p>
+                GraphML-tiedostoissa voit käyttää ALKU/LOPPU-viittauksia
+                linkittämään toisiinsa liittyviä kyselyitä:
+              </p>
+              <ul>
+                <li>
+                  <strong>ALKU:</strong> Viittaa toiseen GraphML-tiedostoon
+                  kyselyn alusta
+                </li>
+                <li>
+                  <strong>LOPPU:</strong> Viittaa toiseen GraphML-tiedostoon
+                  kyselyn lopusta
+                </li>
+              </ul>
+
+              <h4>⚙️ Käyttö:</h4>
+              <ol>
+                <li>
+                  Valitse tulosteen muoto (JSON rakenteellista dataa, Markdown
+                  tekstiä varten)
+                </li>
+                <li>Lataa päätiedosto (.graphml)</li>
+                <li>Lisää tarvittaessa viitetiedostoja</li>
+                <li>Anna kyselylle nimi</li>
+                <li>Paina "Muunna" ja lataa tulokset</li>
+              </ol>
+
+              <h4>📊 Tulosteen muodot:</h4>
+              <ul>
+                <li>
+                  <strong>JSON:</strong> Strukturoitu data, sopii ohjelmalliseen
+                  käyttöön
+                </li>
+                <li>
+                  <strong>Markdown:</strong> Luettava teksti, sopii
+                  dokumentointiin. Voit helposti kopioida ja liittää
+                  Markdown-tulosteen esimerkiksi ChatGPT:lle ja parantaa kyselyä
+                  tekoälyn avulla.
+                </li>
+              </ul>
+            </div>
+          )}
+        </div>
         <div className={styles.cardBody}>
-          <form onSubmit={handleSubmit} className={styles.form}>            {/* Output Format Selection */}
+          <form onSubmit={handleSubmit} className={styles.form}>
+            {" "}
+            {/* Output Format Selection */}
             <div className={styles.formGroup}>
-              <label className={styles.label}>
-                🔄 Tulosteen muoto
-              </label>
+              <label className={styles.label}>🔄 Tulosteen muoto</label>
               <div className={styles.radioGroup}>
                 <label className={styles.radioLabel}>
                   <input
                     type="radio"
                     value="json"
                     checked={outputFormat === "json"}
-                    onChange={(e) => setOutputFormat(e.target.value as "json" | "text")}
+                    onChange={(e) =>
+                      setOutputFormat(e.target.value as "json" | "text")
+                    }
                     className={styles.radioInput}
                   />
                   📊 JSON (rakenne-data)
@@ -141,14 +219,15 @@ function Page() {
                     type="radio"
                     value="text"
                     checked={outputFormat === "text"}
-                    onChange={(e) => setOutputFormat(e.target.value as "json" | "text")}
+                    onChange={(e) =>
+                      setOutputFormat(e.target.value as "json" | "text")
+                    }
                     className={styles.radioInput}
                   />
                   📝 Teksti (Markdown)
                 </label>
               </div>
             </div>
-
             {/* Main File Upload */}
             <div className={styles.formGroup}>
               <label className={styles.label}>
@@ -161,7 +240,8 @@ function Page() {
                 className={styles.fileInput}
                 required
               />
-            </div>            {/* Additional Files */}
+            </div>{" "}
+            {/* Additional Files */}
             <div className={styles.formGroup}>
               <label className={styles.label}>
                 📂 Lisätiedostot GraphML-muodossa (valinnainen)
@@ -173,12 +253,15 @@ function Page() {
                 onChange={handleAdditionalFilesChange}
                 className={styles.fileInput}
               />
-                {/* Display selected additional files */}
+              {/* Display selected additional files */}
               {additionalFiles.length > 0 && (
                 <div className={styles.fileList}>
                   <h4 className={styles.fileListTitle}>Valitut tiedostot:</h4>
                   {additionalFiles.map((file, index) => (
-                    <div key={`${file.name}-${index}`} className={styles.fileItem}>
+                    <div
+                      key={`${file.name}-${index}`}
+                      className={styles.fileItem}
+                    >
                       <span className={styles.fileName}>{file.name}</span>
                       <button
                         type="button"
@@ -191,13 +274,11 @@ function Page() {
                     </div>
                   ))}
                 </div>
-              )}            </div>
-
+              )}{" "}
+            </div>
             {/* Topic Input */}
             <div className={styles.formGroup}>
-              <label className={styles.label}>
-                🏷️ Kyselyn nimi
-              </label>
+              <label className={styles.label}>🏷️ Kyselyn nimi</label>
               <input
                 type="text"
                 value={topic}
@@ -206,7 +287,6 @@ function Page() {
                 placeholder="Kirjoita kyselyn nimi"
               />
             </div>
-
             {/* Include All Sections */}
             <div className={styles.checkboxWrapper}>
               <input
@@ -215,28 +295,37 @@ function Page() {
                 checked={includeAllSections}
                 onChange={(e) => setIncludeAllSections(e.target.checked)}
                 className={styles.checkbox}
-              />              <label htmlFor="includeAllSections" className={styles.checkboxLabel}>
-                Sisällytä kaikki osiot kaikista tiedostoista (myös tyhjät kysymykset)
+              />{" "}
+              <label
+                htmlFor="includeAllSections"
+                className={styles.checkboxLabel}
+              >
+                Sisällytä kaikki osiot kaikista tiedostoista (myös tyhjät
+                kysymykset)
               </label>
             </div>
-
-            {/* Submit Button */}            <button
+            {/* Submit Button */}{" "}
+            <button
               type="submit"
               disabled={loading || !mainFile}
               className={styles.submitButton}
             >
-              {loading ? "⏳ Käsitellään..." : `🚀 Muunna ${outputFormat === "json" ? "JSON:ksi" : "tekstiksi"}`}
+              {loading
+                ? "⏳ Käsitellään..."
+                : `🚀 Muunna ${
+                    outputFormat === "json" ? "JSON:ksi" : "tekstiksi"
+                  }`}
             </button>
           </form>
         </div>
-      </div>      {/* Error Display */}
+      </div>{" "}
+      {/* Error Display */}
       {error && (
         <div className={styles.errorCard}>
           <h3 className={styles.errorTitle}>❌ Virhe</h3>
           <div className={styles.errorMessage}>{error}</div>
         </div>
       )}
-
       {/* Results Display */}
       {result && (
         <div className={styles.successCard}>
@@ -252,7 +341,8 @@ function Page() {
               {result.format === "json" ? (
                 <>
                   <p className={styles.successInfo}>
-                    Kysymyksiä löytyi: <strong>{result.questions?.length || 0}</strong>
+                    Kysymyksiä löytyi:{" "}
+                    <strong>{result.questions?.length || 0}</strong>
                   </p>
                   <p className={styles.successInfo}>
                     Tyyppi: <strong>{result.questionnaireType}</strong>
@@ -260,49 +350,55 @@ function Page() {
                 </>
               ) : (
                 <p className={styles.successInfo}>
-                  Sisällön pituus: <strong>{result.content?.length || 0} merkkiä</strong>
+                  Sisällön pituus:{" "}
+                  <strong>{result.content?.length || 0} merkkiä</strong>
                 </p>
               )}
             </div>
-            <button
-              onClick={downloadResult}
-              className={styles.downloadButton}
-            >
+            <button onClick={downloadResult} className={styles.downloadButton}>
               📥 Lataa {result.format === "text" ? "Markdown" : "JSON"}
             </button>
           </div>
-            {/* Preview section - different for JSON vs Text */}
-          {result.format === "json" && result.questions && result.questions.length > 0 && (
-            <div className={styles.previewSection}>
-              <h4 className={styles.previewTitle}>👀 Esikatselu (3 ensimmäistä kysymystä):</h4>
-              <div className={styles.previewContainer}>
-                {result.questions.slice(0, 3).map((question, index) => (
-                  <div key={question.id || index} className={styles.questionItem}>
-                    <div className={styles.questionMeta}>
-                      Kysymys {index + 1} ({question.type})
+          {/* Preview section - different for JSON vs Text */}
+          {result.format === "json" &&
+            result.questions &&
+            result.questions.length > 0 && (
+              <div className={styles.previewSection}>
+                <h4 className={styles.previewTitle}>
+                  👀 Esikatselu (3 ensimmäistä kysymystä):
+                </h4>
+                <div className={styles.previewContainer}>
+                  {result.questions.slice(0, 3).map((question, index) => (
+                    <div
+                      key={question.id || index}
+                      className={styles.questionItem}
+                    >
+                      <div className={styles.questionMeta}>
+                        Kysymys {index + 1} ({question.type})
+                      </div>
+                      <div className={styles.questionText}>{question.text}</div>
                     </div>
-                    <div className={styles.questionText}>{question.text}</div>
-                  </div>
-                ))}
-                {result.questions.length > 3 && (
-                  <div className={styles.moreQuestions}>
-                    ... ja {result.questions.length - 3} kysymystä lisää
-                  </div>
-                )}
+                  ))}
+                  {result.questions.length > 3 && (
+                    <div className={styles.moreQuestions}>
+                      ... ja {result.questions.length - 3} kysymystä lisää
+                    </div>
+                  )}
+                </div>
               </div>
-            </div>
-          )}
-          
+            )}
+
           {/* Text format preview */}
           {result.format === "text" && result.content && (
             <div className={styles.previewSection}>
-              <h4 className={styles.previewTitle}>👀 Esikatselu (500 ensimmäistä merkkiä):</h4>
+              <h4 className={styles.previewTitle}>
+                👀 Esikatselu (500 ensimmäistä merkkiä):
+              </h4>
               <div className={styles.textPreviewContainer}>
                 <pre className={styles.textPreview}>
-                  {result.content.length > 500 
-                    ? result.content.substring(0, 500) + "..." 
-                    : result.content
-                  }
+                  {result.content.length > 500
+                    ? result.content.substring(0, 500) + "..."
+                    : result.content}
                 </pre>
               </div>
             </div>

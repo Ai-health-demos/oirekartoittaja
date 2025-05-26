@@ -377,3 +377,76 @@
   white-space: pre-wrap;
   word-wrap: break-word;
 }
+
+/* Help section styles */
+.helpSection {
+  background: #f8fafc;
+  border: 1px solid #e2e8f0;
+  border-radius: 8px;
+  margin: 16px 24px;
+  overflow: hidden;
+}
+
+.helpButton {
+  width: 100%;
+  background: #f1f5f9;
+  border: none;
+  padding: 12px 16px;
+  text-align: left;
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: 500;
+  color: #475569;
+  transition: background-color 0.2s;
+}
+
+.helpButton:hover {
+  background: #e2e8f0;
+}
+
+.helpButton:focus {
+  outline: none;
+  background: #e2e8f0;
+  box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.2);
+}
+
+.helpContent {
+  padding: 20px;
+  background: white;
+  border-top: 1px solid #e2e8f0;
+  line-height: 1.6;
+}
+
+.helpContent h3 {
+  color: #1e293b;
+  font-size: 18px;
+  font-weight: 600;
+  margin: 0 0 12px 0;
+}
+
+.helpContent h4 {
+  color: #334155;
+  font-size: 14px;
+  font-weight: 600;
+  margin: 16px 0 8px 0;
+}
+
+.helpContent p {
+  color: #475569;
+  margin: 0 0 12px 0;
+}
+
+.helpContent ul, .helpContent ol {
+  color: #475569;
+  margin: 8px 0 12px 0;
+  padding-left: 20px;
+}
+
+.helpContent li {
+  margin: 4px 0;
+}
+
+.helpContent strong {
+  color: #1e293b;
+  font-weight: 600;
+}
