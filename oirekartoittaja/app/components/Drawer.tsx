@@ -1,7 +1,7 @@
 'use client';
 
-import React from 'react';
 import Link from 'next/link';
+import React from 'react';
 
 interface DrawerProps {
   toggleDrawer: () => void;
@@ -21,6 +21,9 @@ const Drawer: React.FC<DrawerProps> = ({ toggleDrawer }) => {
           </li>
           <li>
             <Link href="/editor" onClick={toggleDrawer}>Oirekyselymuokkaaja</Link>
+          </li>
+          <li>
+            <Link href="/parser" onClick={toggleDrawer}>GraphML Muunnin</Link>
           </li>
         </ul>
       </nav>
