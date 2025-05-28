@@ -1,5 +1,6 @@
 "use client";
 
+import { MedicalQuestionnaire } from "@/app/schema/shcema2";
 import { useState } from "react";
 import styles from "./page.module.css";
 
@@ -9,11 +10,13 @@ interface ConversionResult {
   content?: string; // For text format
   questions?: Array<{
     id: string;
-    text: string;
-    type: string;
-    // Add other question properties as needed
+    question: string;
+    answers: Array<{
+      text: string;
+      followUpQuestions?: any[];
+    }>;
   }>;
-  questionnaireType?: string;
+  questionnaireType?: "overallHealth" | "symptomFocused";
 }
 
 function Page() {
@@ -26,6 +29,8 @@ function Page() {
   const [result, setResult] = useState<ConversionResult | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [showHelp, setShowHelp] = useState(false);
+  const [showSaveDialog, setShowSaveDialog] = useState(false);
+  const [saveSuccess, setSaveSuccess] = useState<string | null>(null);
 
   const handleAdditionalFilesChange = (
     e: React.ChangeEvent<HTMLInputElement>
@@ -64,8 +69,7 @@ function Page() {
         additionalFiles.forEach((file) => {
           formData.append("additional_files", file);
         });
-      }
-      console.log("formdata", formData);
+      }      console.log("formdata", formData);
 
       const response = await fetch("/api/python/v1/convert", {
         method: "POST",
@@ -75,10 +79,13 @@ function Page() {
       if (!response.ok) {
         const errorData = await response.json();
         throw new Error(errorData.error || "Conversion failed");
-      }
-
-      const data = await response.json();
+      }      const data = await response.json();
       setResult(data);
+      
+      // Show save dialog only for JSON format
+      if (data.format === "json" || outputFormat === "json") {
+        setShowSaveDialog(true);
+      }
     } catch (err) {
       setError(err instanceof Error ? err.message : "An error occurred");
     } finally {
@@ -101,15 +108,40 @@ function Page() {
       dataStr = JSON.stringify(result, null, 2);
       filename = `${result.topic.replace(/\s+/g, "_")}_questionnaire.json`;
       mimeType = "application/json";
-    }
-
-    const dataBlob = new Blob([dataStr], { type: mimeType });
+    }    const dataBlob = new Blob([dataStr], { type: mimeType });
     const url = URL.createObjectURL(dataBlob);
     const link = document.createElement("a");
     link.href = url;
     link.download = filename;
     link.click();
     URL.revokeObjectURL(url);
+  };
+
+  const saveToLocalStorage = () => {
+    if (!result || result.format === "text") return;
+    
+    try {
+      // Convert to the expected format
+      const questionnaire: MedicalQuestionnaire = {
+        questionnaireType: result.questionnaireType || "overallHealth",
+        topic: result.topic,
+        questions: result.questions || []
+      };
+      
+      const newKey = `questionnaire_${Date.now()}`;
+      localStorage.setItem(newKey, JSON.stringify(questionnaire));
+      setSaveSuccess(`Kysely tallennettu avaimella: ${newKey}`);
+      setShowSaveDialog(false);
+      
+      // Clear success message after 3 seconds
+      setTimeout(() => setSaveSuccess(null), 3000);
+    } catch (err) {
+      setError("Virhe tallentaessa kyselyä");
+    }
+  };
+
+  const cancelSave = () => {
+    setShowSaveDialog(false);
   };
   return (
     <div className={styles.container}>
@@ -354,55 +386,52 @@ function Page() {
                   <strong>{result.content?.length || 0} merkkiä</strong>
                 </p>
               )}
-            </div>
-            <button onClick={downloadResult} className={styles.downloadButton}>
+            </div>            <button onClick={downloadResult} className={styles.downloadButton}>
               📥 Lataa {result.format === "text" ? "Markdown" : "JSON"}
             </button>
+            {result.format === "json" && (
+              <button onClick={() => setShowSaveDialog(true)} className={styles.downloadButton}>
+                💾 Tallenna sovellukseen
+              </button>            )}
           </div>
-          {/* Preview section - different for JSON vs Text */}
-          {result.format === "json" &&
-            result.questions &&
-            result.questions.length > 0 && (
-              <div className={styles.previewSection}>
-                <h4 className={styles.previewTitle}>
-                  👀 Esikatselu (3 ensimmäistä kysymystä):
-                </h4>
-                <div className={styles.previewContainer}>
-                  {result.questions.slice(0, 3).map((question, index) => (
-                    <div
-                      key={question.id || index}
-                      className={styles.questionItem}
-                    >
-                      <div className={styles.questionMeta}>
-                        Kysymys {index + 1} ({question.type})
-                      </div>
-                      <div className={styles.questionText}>{question.text}</div>
-                    </div>
-                  ))}
-                  {result.questions.length > 3 && (
-                    <div className={styles.moreQuestions}>
-                      ... ja {result.questions.length - 3} kysymystä lisää
-                    </div>
-                  )}
-                </div>
-              </div>
-            )}
+        </div>
+      )}
 
-          {/* Text format preview */}
-          {result.format === "text" && result.content && (
-            <div className={styles.previewSection}>
-              <h4 className={styles.previewTitle}>
-                👀 Esikatselu (500 ensimmäistä merkkiä):
-              </h4>
-              <div className={styles.textPreviewContainer}>
-                <pre className={styles.textPreview}>
-                  {result.content.length > 500
-                    ? result.content.substring(0, 500) + "..."
-                    : result.content}
-                </pre>
-              </div>
+      {/* Save Dialog */}
+      {showSaveDialog && (
+        <div className={styles.successCard}>
+          <div className={styles.successHeader}>
+            <div>
+              <h3 className={styles.successTitle}>💾 Tallenna kysely sovellukseen</h3>
+              <p className={styles.successInfo}>
+                Haluatko tallentaa kyselyn "{result?.topic}" sovelluksen muistiin? 
+                Voit myöhemmin muokata ja käyttää sitä kyselyiden tekemiseen.
+              </p>
             </div>
-          )}
+            <div style={{ display: 'flex', gap: '8px' }}>
+              <button onClick={saveToLocalStorage} className={styles.downloadButton}>
+                ✅ Kyllä, tallenna
+              </button>
+              <button onClick={cancelSave} className={styles.downloadButton} style={{ background: '#6b7280' }}>
+                ❌ Ei kiitos
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Save Success Message */}
+      {saveSuccess && (
+        <div className={styles.successCard}>
+          <div className={styles.successHeader}>
+            <div>
+              <h3 className={styles.successTitle}>✅ Tallennus onnistui!</h3>
+              <p className={styles.successInfo}>{saveSuccess}</p>
+              <p className={styles.successInfo}>
+                Voit nyt siirtyä <a href="/editor" style={{ color: '#2563eb', textDecoration: 'underline' }}>kyselyiden hallintaan</a> muokataksesi tai käyttääksesi kyselyä.
+              </p>
+            </div>
+          </div>
         </div>
       )}
     </div>
