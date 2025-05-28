@@ -32,6 +32,33 @@ function Page() {
   const [showSaveDialog, setShowSaveDialog] = useState(false);
   const [saveSuccess, setSaveSuccess] = useState<string | null>(null);
 
+  // Shared function to validate and fix questions
+  const validateAndFixQuestions = (questions: any[]): any[] => {
+    return questions.map(question => {
+      // Rekursiivisesti käsittele myös jatkokysymykset
+      const processedAnswers = question.answers?.map((answer: any) => {
+        const processedAnswer = { ...answer };
+        
+        // Jos vastauksessa on jatkokysymyksiä, validoi nekin
+        if (answer.followUpQuestions && Array.isArray(answer.followUpQuestions)) {
+          processedAnswer.followUpQuestions = validateAndFixQuestions(answer.followUpQuestions);
+        }
+        
+        return processedAnswer;
+      }) || [];
+
+      // Jos kysymyksellä ei ole vastauksia tai vastausarray on tyhjä, lisää placeholder
+      if (!question.answers || question.answers.length === 0) {
+        processedAnswers.push({ text: "Kirjoita vastaus" });
+      }
+
+      return {
+        ...question,
+        answers: processedAnswers
+      };
+    });
+  };
+
   const handleAdditionalFilesChange = (
     e: React.ChangeEvent<HTMLInputElement>
   ) => {
@@ -69,8 +96,7 @@ function Page() {
         additionalFiles.forEach((file) => {
           formData.append("additional_files", file);
         });
-      }
-      console.log("formdata", formData);
+      }      console.log("formdata", formData);
 
       const response = await fetch("/api/python/v1/convert", {
         method: "POST",
@@ -80,9 +106,15 @@ function Page() {
       if (!response.ok) {
         const errorData = await response.json();
         throw new Error(errorData.error || "Conversion failed");
+      }      const data = await response.json();
+        // Validate and fix questions if it's JSON format
+      if (data.format === "json" || outputFormat === "json") {
+        // Apply validation to the result
+        if (data.questions) {
+          data.questions = validateAndFixQuestions(data.questions);
+        }
       }
       
-      const data = await response.json();
       setResult(data);
       
       // Show save dialog only for JSON format
@@ -111,26 +143,22 @@ function Page() {
       dataStr = JSON.stringify(result, null, 2);
       filename = `${result.topic.replace(/\s+/g, "_")}_questionnaire.json`;
       mimeType = "application/json";
-    }
-
-    const dataBlob = new Blob([dataStr], { type: mimeType });
+    }    const dataBlob = new Blob([dataStr], { type: mimeType });
     const url = URL.createObjectURL(dataBlob);
     const link = document.createElement("a");
     link.href = url;
     link.download = filename;
     link.click();
     URL.revokeObjectURL(url);
-  };
-
-  const saveToLocalStorage = () => {
+  };  const saveToLocalStorage = () => {
     if (!result || result.format === "text") return;
     
     try {
-      // Nyt kun validointi tehdään jo parser-vaiheessa, voimme käyttää dataa suoraan
+      // Convert to the expected format
       const questionnaire: MedicalQuestionnaire = {
         questionnaireType: result.questionnaireType || "overallHealth",
         topic: result.topic,
-        questions: result.questions || []
+        questions: validateAndFixQuestions(result.questions || [])
       };
       
       const newKey = `questionnaire_${Date.now()}`;
@@ -148,10 +176,10 @@ function Page() {
   const cancelSave = () => {
     setShowSaveDialog(false);
   };
-
   return (
     <div className={styles.container}>
       <div className={styles.card}>
+        {" "}
         <div className={styles.cardHeader}>
           <h1 className={styles.title}>📋 GraphML Muunnin</h1>
           <p className={styles.subtitle}>
@@ -234,6 +262,7 @@ function Page() {
         </div>
         <div className={styles.cardBody}>
           <form onSubmit={handleSubmit} className={styles.form}>
+            {" "}
             {/* Output Format Selection */}
             <div className={styles.formGroup}>
               <label className={styles.label}>🔄 Tulosteen muoto</label>
@@ -276,7 +305,7 @@ function Page() {
                 className={styles.fileInput}
                 required
               />
-            </div>
+            </div>{" "}
             {/* Additional Files */}
             <div className={styles.formGroup}>
               <label className={styles.label}>
@@ -310,7 +339,7 @@ function Page() {
                     </div>
                   ))}
                 </div>
-              )}
+              )}{" "}
             </div>
             {/* Topic Input */}
             <div className={styles.formGroup}>
@@ -331,7 +360,7 @@ function Page() {
                 checked={includeAllSections}
                 onChange={(e) => setIncludeAllSections(e.target.checked)}
                 className={styles.checkbox}
-              />
+              />{" "}
               <label
                 htmlFor="includeAllSections"
                 className={styles.checkboxLabel}
@@ -340,7 +369,7 @@ function Page() {
                 kysymykset)
               </label>
             </div>
-            {/* Submit Button */}
+            {/* Submit Button */}{" "}
             <button
               type="submit"
               disabled={loading || !mainFile}
@@ -354,8 +383,7 @@ function Page() {
             </button>
           </form>
         </div>
-      </div>
-
+      </div>{" "}
       {/* Error Display */}
       {error && (
         <div className={styles.errorCard}>
@@ -363,7 +391,6 @@ function Page() {
           <div className={styles.errorMessage}>{error}</div>
         </div>
       )}
-
       {/* Results Display */}
       {result && (
         <div className={styles.successCard}>
@@ -392,15 +419,13 @@ function Page() {
                   <strong>{result.content?.length || 0} merkkiä</strong>
                 </p>
               )}
-            </div>
-            <button onClick={downloadResult} className={styles.downloadButton}>
+            </div>            <button onClick={downloadResult} className={styles.downloadButton}>
               📥 Lataa {result.format === "text" ? "Markdown" : "JSON"}
             </button>
             {result.format === "json" && (
               <button onClick={() => setShowSaveDialog(true)} className={styles.downloadButton}>
                 💾 Tallenna sovellukseen
-              </button>
-            )}
+              </button>            )}
           </div>
         </div>
       )}
