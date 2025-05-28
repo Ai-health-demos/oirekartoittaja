@@ -3,11 +3,11 @@
 import React, { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
-import styles from '@/app/styles/QuestionEditor.module.css'; // ensure this supports flex layout or modify as needed
+import styles from '@/app/styles/QuestionEditor.module.css';
 
 interface StoredQuestionnaire {
   key: string;
-  name: string;
+  topic: string;
 }
 
 const QuestionnaireListing = () => {
@@ -19,9 +19,19 @@ const QuestionnaireListing = () => {
     for (let i = 0; i < localStorage.length; i++) {
       const key = localStorage.key(i);
       if (key && key.startsWith('questionnaire_')) {
+        const raw = localStorage.getItem(key);
+        let topic = 'Nimetön'; // fallback if missing
+        if (raw) {
+          try {
+            const data = JSON.parse(raw);
+            topic = data.topic || 'Nimetön';
+          } catch {
+            // Ignore parse errors, use fallback
+          }
+        }
         items.push({
           key,
-          name: key.replace('questionnaire_', '').replace('.json', ''),
+          topic,
         });
       }
     }
@@ -34,6 +44,70 @@ const QuestionnaireListing = () => {
     setQuestionnaires((prev) => prev.filter((q) => q.key !== keyToDelete));
   };
 
+  const handleDownload = (key: string) => {
+    const data = localStorage.getItem(key);
+    if (data) {
+      let questionnaireObj;
+      try {
+        questionnaireObj = JSON.parse(data);
+      } catch {
+        questionnaireObj = null;
+      }
+      if (questionnaireObj && Array.isArray(questionnaireObj.questions)) {
+        // Get locked questions
+        const locked: any[] = [];
+        for (let i = 0; i < localStorage.length; i++) {
+          const k = localStorage.key(i);
+          if (k && k.startsWith('locked_')) {
+            try {
+              const raw = localStorage.getItem(k);
+              if (raw) {
+                const lockedQ = JSON.parse(raw);
+                locked.push(lockedQ);
+              }
+            } catch {
+              // Ignore parse errors
+            }
+          }
+        }
+        // Merge locked questions at start (avoid duplicates)
+        const originalQuestions = questionnaireObj.questions;
+        const allQuestions = [
+          ...locked.filter(
+            lq => !originalQuestions.some((q: any) => q.id === lq.id)
+          ),
+          ...originalQuestions,
+        ];
+        // New questionnaire object
+        const downloadObj = { ...questionnaireObj, questions: allQuestions };
+        const jsonStr = JSON.stringify(downloadObj, null, 2);
+
+        const blob = new Blob([jsonStr], { type: 'application/json' });
+        const url = URL.createObjectURL(blob);
+
+        const link = document.createElement('a');
+        link.href = url;
+        link.download = `${key.replace('questionnaire_', '')}`;
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+        URL.revokeObjectURL(url);
+      } else {
+        // fallback: download raw data
+        const blob = new Blob([data], { type: 'application/json' });
+        const url = URL.createObjectURL(blob);
+
+        const link = document.createElement('a');
+        link.href = url;
+        link.download = `${key.replace('questionnaire_', '')}`;
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+        URL.revokeObjectURL(url);
+      }
+    }
+  };
+
   return (
     <div className={styles.container}>
       <nav className={styles.sidebar}>
@@ -43,15 +117,25 @@ const QuestionnaireListing = () => {
             <li key={q.key} className={styles.questionnaireItem}>
               <div className={styles.itemRow}>
                 <Link href={`/editor/${encodeURIComponent(q.key)}`}>
-                  {q.name}
+                  {/* Display topic, max 13 chars */}
+                  {q.topic.length > 13 ? q.topic.slice(0, 13) : q.topic}
                 </Link>
-                <button
-                  onClick={() => handleDelete(q.key)}
-                  className={styles.deleteButton}
-                  aria-label={`Poista ${q.name}`}
-                >
-                  🗑️
-                </button>
+                <div>
+                  <button
+                    onClick={() => handleDownload(q.key)}
+                    className={styles.downloadButton}
+                    aria-label={`Lataa ${q.topic}`}
+                  >
+                    📥
+                  </button>
+                  <button
+                    onClick={() => handleDelete(q.key)}
+                    className={styles.deleteButton}
+                    aria-label={`Poista ${q.topic}`}
+                  >
+                    🗑️
+                  </button>
+                </div>
               </div>
             </li>
           ))}

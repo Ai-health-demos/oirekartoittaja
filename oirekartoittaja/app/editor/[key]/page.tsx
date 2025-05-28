@@ -15,6 +15,7 @@ type Question = {
   question: string;
   answers: Answer[];
   followUpParent?: { parentQuestionId: string; parentAnswerText: string };
+  locked?: boolean;
 };
 
 type Questionnaire = {
@@ -27,6 +28,7 @@ const QuestionnaireEditor = () => {
   const params = useParams();
   const key = typeof params?.key === 'string' ? params.key : Array.isArray(params?.key) ? params.key[0] : '';
   const [questionnaire, setQuestionnaire] = useState<Questionnaire | null>(null);
+  const [lockedQuestions, setLockedQuestions] = useState<Question[]>([]);
 
   useEffect(() => {
     if (!key) return;
@@ -59,12 +61,33 @@ const QuestionnaireEditor = () => {
 
       data.questions.forEach((q: Question) => flatten(q));
       setQuestionnaire({ ...data, questions: flatQuestions });
+
+      //load locked questions
+      const lockedKeys = Object.keys(localStorage).filter(k => k.startsWith('locked_'));
+        const loadedLocked = lockedKeys.map(k => {
+            try {
+            return JSON.parse(localStorage.getItem(k) ?? '');
+            } catch {
+            return null;
+            }
+        }).filter(Boolean);
+        setLockedQuestions(loadedLocked);
     } catch (err) {
       console.error('Failed to load questionnaire from localStorage');
     }
   }, [key]);
 
-  // ... (everything else remains the same)
+  const addLockedQuestion = () => {
+    setLockedQuestions(prev => [
+      {
+        id: crypto.randomUUID(),
+        question: 'Lukittu kysymys',
+        answers: [{ text: 'Uusi vastaus' }],
+        locked: true,
+      },
+      ...prev,
+    ]);
+  };  
 
   const updateQuestion = (qIdx: number, value: string) => {
     setQuestionnaire(prev => {
@@ -222,6 +245,14 @@ const QuestionnaireEditor = () => {
       questions: mainQuestions,
     };
 
+    if(lockedQuestions[0]){
+        // --- Save locked questions separately ---
+        lockedQuestions.forEach(q => {
+            localStorage.setItem(`locked_${q.id}`, JSON.stringify(q));
+        });
+    }
+
+
     localStorage.setItem(key, JSON.stringify(restored, null, 2));
     alert('Tallennettu!');
   };
@@ -235,6 +266,94 @@ const QuestionnaireEditor = () => {
       </nav>
       <main className={styles.mainContent}>
         <h2>{questionnaire.topic}</h2>
+        <button
+    className={styles.addBtn}
+    style={{ marginBottom: '1rem' }}
+    onClick={addLockedQuestion}
+    type="button"
+  >
+    Lisää lukittu kysymys
+  </button>
+
+  {lockedQuestions.length > 0 && (
+    <div
+      className={styles.lockedContainer}
+      style={{
+        marginBottom: '2rem',
+        borderBottom: '2px solid #ccc',
+        paddingBottom: '2rem'
+      }}
+    >
+      <h3 style={{ marginBottom: '1rem' }}>Lukitut kysymykset</h3>
+      {lockedQuestions.map((q, qIdx) => (
+        <div
+          key={q.id}
+          className={`${styles.questionBlock} ${styles.followUpBlock}`}
+        >
+          <input
+            className={styles.questionInput}
+            value={q.question}
+            onChange={e =>
+              setLockedQuestions(prev => {
+                const updated = [...prev];
+                updated[qIdx].question = e.target.value;
+                return updated;
+              })
+            }
+          />
+          <button
+            className={styles.deleteBtn}
+            onClick={() =>
+              setLockedQuestions(prev =>
+                prev.filter((_, idx) => idx !== qIdx)
+              )
+            }
+          >
+            Poista kysymys
+          </button>
+          {q.answers.map((a, aIdx) => (
+            <div key={aIdx} className={styles.answerBlock}>
+              <input
+                className={styles.answerInput}
+                value={a.text}
+                onChange={e =>
+                  setLockedQuestions(prev => {
+                    const updated = [...prev];
+                    updated[qIdx].answers[aIdx].text = e.target.value;
+                    return updated;
+                  })
+                }
+              />
+              <button
+                className={styles.deleteBtnSmall}
+                onClick={() =>
+                  setLockedQuestions(prev => {
+                    const updated = [...prev];
+                    updated[qIdx].answers.splice(aIdx, 1);
+                    return updated;
+                  })
+                }
+              >
+                Poista vastaus
+              </button>
+              <button
+                className={styles.addBtnSmall}
+                onClick={() =>
+                  setLockedQuestions(prev => {
+                    const updated = [...prev];
+                    updated[qIdx].answers.splice(aIdx + 1, 0, { text: 'Uusi vastaus' });
+                    return updated;
+                  })
+                }
+              >
+                + Lisää vastaus
+              </button>
+            </div>
+          ))}
+        </div>
+      ))}
+    </div>
+  )}
         {questionnaire.questions.map((q, qIdx) => {
           const isFollowUp = !!q.followUpParent;
           return (

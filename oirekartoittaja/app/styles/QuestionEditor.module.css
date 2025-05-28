@@ -10,7 +10,7 @@
 
   .sidebar {
     margin-left: 60px;
-    width: 220px;
+    width: 230px;
     background: #fff;
     padding: 20px;
     border-right: 1px solid #ddd;
@@ -168,3 +168,9 @@
     transform: translateY(-2px);
     box-shadow: 4px 4px 12px rgba(0, 0, 0, 0.4);
   }  
+
+  .downloadButton {
+    background: none;
+    border: none;
+    cursor: pointer;
+  }
