@@ -4,6 +4,7 @@ import React, { useEffect, useState } from 'react';
 import { useParams } from 'next/navigation';
 import Link from 'next/link';
 import styles from '@/app/styles/QuestionEditor.module.css';
+import { getSharedQuestions, saveSharedQuestions, getSharedQuestionById, SharedQuestion } from '@/app/lib/sharedQuestions';
 
 type Answer = {
   text: string;
@@ -15,6 +16,8 @@ type Question = {
   question: string;
   answers: Answer[];
   followUpParent?: { parentQuestionId: string; parentAnswerText: string };
+  isShared?: boolean; // Merkitsee onko jaettu kysymys
+  sharedId?: string; // Viittaus jaettuun kysymykseen
 };
 
 type Questionnaire = {
@@ -27,6 +30,13 @@ const QuestionnaireEditor = () => {
   const params = useParams();
   const key = typeof params?.key === 'string' ? params.key : Array.isArray(params?.key) ? params.key[0] : '';
   const [questionnaire, setQuestionnaire] = useState<Questionnaire | null>(null);
+  const [sharedQuestions, setSharedQuestions] = useState<SharedQuestion[]>([]);
+  const [showSharedQuestions, setShowSharedQuestions] = useState(false);
+
+  // Lataa jaetut kysymykset
+  useEffect(() => {
+    setSharedQuestions(getSharedQuestions());
+  }, []);
 
   useEffect(() => {
     if (!key) return;
@@ -186,6 +196,87 @@ const QuestionnaireEditor = () => {
     });
   };
 
+  // Jaa kysymys jaettuihin kysymyksiin
+  const shareQuestion = (qIdx: number) => {
+    if (!questionnaire) return;
+    
+    const question = questionnaire.questions[qIdx];
+    if (question.isShared) return; // Jo jaettu
+    
+    const sharedQuestion: SharedQuestion = {
+      id: `shared_${Date.now()}`,
+      question: question.question,
+      answers: question.answers.map(a => ({ text: a.text })),
+      isShared: true
+    };
+    
+    const updatedShared = [...sharedQuestions, sharedQuestion];
+    setSharedQuestions(updatedShared);
+    saveSharedQuestions(updatedShared);
+    
+    // Merkitse kysymys jaetuksi
+    setQuestionnaire(prev => {
+      if (!prev) return prev;
+      const updated = { ...prev };
+      updated.questions[qIdx] = {
+        ...question,
+        isShared: true,
+        sharedId: sharedQuestion.id
+      };
+      return updated;
+    });
+  };
+
+  // Lisää jaettu kysymys kyselyyn
+  const addSharedQuestion = (sharedId: string, index: number) => {
+    const shared = getSharedQuestionById(sharedId);
+    if (!shared) return;
+    
+    const newQuestion: Question = {
+      id: crypto.randomUUID(),
+      question: shared.question,
+      answers: shared.answers.map(a => ({ text: a.text })),
+      isShared: true,
+      sharedId: shared.id
+    };
+    
+    setQuestionnaire(prev => {
+      if (!prev) return prev;
+      return {
+        ...prev,
+        questions: [
+          ...prev.questions.slice(0, index + 1),
+          newQuestion,
+          ...prev.questions.slice(index + 1),
+        ],
+      };
+    });
+    setShowSharedQuestions(false);
+  };
+
+  // Päivitä jaettu kysymys
+  const updateSharedQuestion = (sharedId: string, newQuestion: string, newAnswers: Array<{text: string}>) => {
+    const updatedShared = sharedQuestions.map(sq => 
+      sq.id === sharedId 
+        ? { ...sq, question: newQuestion, answers: newAnswers }
+        : sq
+    );
+    setSharedQuestions(updatedShared);
+    saveSharedQuestions(updatedShared);
+    
+    // Päivitä kaikki kyselyssä olevat jaetut kysymykset
+    setQuestionnaire(prev => {
+      if (!prev) return prev;
+      const updated = { ...prev };
+      updated.questions = updated.questions.map(q => 
+        q.sharedId === sharedId 
+          ? { ...q, question: newQuestion, answers: newAnswers.map(a => ({ text: a.text })) }
+          : q
+      );
+      return updated;
+    });
+  };
+
   const saveChanges = () => {
     if (!questionnaire || !key) return;
 
@@ -232,6 +323,9 @@ const QuestionnaireEditor = () => {
     <div className={styles.container}>
       <nav className={styles.sidebar}>
         <Link href="/editor">← Takaisin listaan</Link>
+        <Link href="/editor/shared" className={styles.sharedLink}>
+          📌 Hallitse jaettuja kysymyksiä
+        </Link>
       </nav>
       <main className={styles.mainContent}>
         <h2>{questionnaire.topic}</h2>
@@ -256,9 +350,23 @@ const QuestionnaireEditor = () => {
                   value={q.question}
                   onChange={(e) => updateQuestion(qIdx, e.target.value)}
                 />
-                <button className={styles.deleteBtn} onClick={() => deleteQuestion(qIdx)}>
-                  Poista kysymys
-                </button>
+                <div className={styles.questionButtons}>
+                  {q.isShared && (
+                    <span className={styles.sharedLabel}>📌 Jaettu kysymys</span>
+                  )}
+                  {!q.isShared && !isFollowUp && (
+                    <button 
+                      className={styles.shareBtn} 
+                      onClick={() => shareQuestion(qIdx)}
+                      title="Jaa kysymys käytettäväksi muissa kyselyissä"
+                    >
+                      📌 Jaa kysymys
+                    </button>
+                  )}
+                  <button className={styles.deleteBtn} onClick={() => deleteQuestion(qIdx)}>
+                    Poista kysymys
+                  </button>
+                </div>
                 {q.answers.map((a, aIdx) => (
                   <div key={aIdx} className={styles.answerBlock}>
                     <input
@@ -290,9 +398,17 @@ const QuestionnaireEditor = () => {
                 ))}
               </div>
               {!isFollowUp && (
-                <button className={styles.addBtn} onClick={() => addQuestionBlock(qIdx)}>
-                  + Lisää uusi kysymys
-                </button>
+                <>
+                  <button className={styles.addBtn} onClick={() => addQuestionBlock(qIdx)}>
+                    + Lisää uusi kysymys
+                  </button>
+                  <button 
+                    className={styles.addSharedBtn} 
+                    onClick={() => setShowSharedQuestions(true)}
+                  >
+                    📌 Lisää jaettu kysymys
+                  </button>
+                </>
               )}
             </React.Fragment>
           );
@@ -302,6 +418,49 @@ const QuestionnaireEditor = () => {
           Tallenna muutokset
         </button>
       </main>
+
+      {/* Modal jaetuille kysymyksille */}
+      {showSharedQuestions && (
+        <div className={styles.modal}>
+          <div className={styles.modalContent}>
+            <div className={styles.modalHeader}>
+              <h3>Valitse jaettu kysymys</h3>
+              <button 
+                className={styles.closeBtn}
+                onClick={() => setShowSharedQuestions(false)}
+              >
+                ×
+              </button>
+            </div>
+            <div className={styles.modalBody}>
+              {sharedQuestions.length === 0 ? (
+                <p>Ei jaettuja kysymyksiä. Jaa ensin kysymys käyttämällä "📌 Jaa kysymys" -painiketta.</p>
+              ) : (
+                <div className={styles.sharedQuestionsList}>
+                  {sharedQuestions.map((sq) => (
+                    <div key={sq.id} className={styles.sharedQuestionItem}>
+                      <h4>{sq.question}</h4>
+                      <div className={styles.answersPreview}>
+                        {sq.answers.map((a, idx) => (
+                          <span key={idx} className={styles.answerChip}>
+                            {a.text}
+                          </span>
+                        ))}
+                      </div>
+                      <button 
+                        className={styles.selectBtn}
+                        onClick={() => addSharedQuestion(sq.id, questionnaire?.questions.length - 1 || 0)}
+                      >
+                        Valitse
+                      </button>
+                    </div>
+                  ))}
+                </div>
+              )}
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };
