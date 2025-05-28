@@ -69,7 +69,8 @@ function Page() {
         additionalFiles.forEach((file) => {
           formData.append("additional_files", file);
         });
-      }      console.log("formdata", formData);
+      }
+      console.log("formdata", formData);
 
       const response = await fetch("/api/python/v1/convert", {
         method: "POST",
@@ -79,7 +80,9 @@ function Page() {
       if (!response.ok) {
         const errorData = await response.json();
         throw new Error(errorData.error || "Conversion failed");
-      }      const data = await response.json();
+      }
+      
+      const data = await response.json();
       setResult(data);
       
       // Show save dialog only for JSON format
@@ -108,7 +111,9 @@ function Page() {
       dataStr = JSON.stringify(result, null, 2);
       filename = `${result.topic.replace(/\s+/g, "_")}_questionnaire.json`;
       mimeType = "application/json";
-    }    const dataBlob = new Blob([dataStr], { type: mimeType });
+    }
+
+    const dataBlob = new Blob([dataStr], { type: mimeType });
     const url = URL.createObjectURL(dataBlob);
     const link = document.createElement("a");
     link.href = url;
@@ -121,7 +126,7 @@ function Page() {
     if (!result || result.format === "text") return;
     
     try {
-      // Convert to the expected format
+      // Nyt kun validointi tehdään jo parser-vaiheessa, voimme käyttää dataa suoraan
       const questionnaire: MedicalQuestionnaire = {
         questionnaireType: result.questionnaireType || "overallHealth",
         topic: result.topic,
@@ -143,10 +148,10 @@ function Page() {
   const cancelSave = () => {
     setShowSaveDialog(false);
   };
+
   return (
     <div className={styles.container}>
       <div className={styles.card}>
-        {" "}
         <div className={styles.cardHeader}>
           <h1 className={styles.title}>📋 GraphML Muunnin</h1>
           <p className={styles.subtitle}>
@@ -229,7 +234,6 @@ function Page() {
         </div>
         <div className={styles.cardBody}>
           <form onSubmit={handleSubmit} className={styles.form}>
-            {" "}
             {/* Output Format Selection */}
             <div className={styles.formGroup}>
               <label className={styles.label}>🔄 Tulosteen muoto</label>
@@ -272,7 +276,7 @@ function Page() {
                 className={styles.fileInput}
                 required
               />
-            </div>{" "}
+            </div>
             {/* Additional Files */}
             <div className={styles.formGroup}>
               <label className={styles.label}>
@@ -306,7 +310,7 @@ function Page() {
                     </div>
                   ))}
                 </div>
-              )}{" "}
+              )}
             </div>
             {/* Topic Input */}
             <div className={styles.formGroup}>
@@ -327,7 +331,7 @@ function Page() {
                 checked={includeAllSections}
                 onChange={(e) => setIncludeAllSections(e.target.checked)}
                 className={styles.checkbox}
-              />{" "}
+              />
               <label
                 htmlFor="includeAllSections"
                 className={styles.checkboxLabel}
@@ -336,7 +340,7 @@ function Page() {
                 kysymykset)
               </label>
             </div>
-            {/* Submit Button */}{" "}
+            {/* Submit Button */}
             <button
               type="submit"
               disabled={loading || !mainFile}
@@ -350,7 +354,8 @@ function Page() {
             </button>
           </form>
         </div>
-      </div>{" "}
+      </div>
+
       {/* Error Display */}
       {error && (
         <div className={styles.errorCard}>
@@ -358,6 +363,7 @@ function Page() {
           <div className={styles.errorMessage}>{error}</div>
         </div>
       )}
+
       {/* Results Display */}
       {result && (
         <div className={styles.successCard}>
@@ -386,13 +392,15 @@ function Page() {
                   <strong>{result.content?.length || 0} merkkiä</strong>
                 </p>
               )}
-            </div>            <button onClick={downloadResult} className={styles.downloadButton}>
+            </div>
+            <button onClick={downloadResult} className={styles.downloadButton}>
               📥 Lataa {result.format === "text" ? "Markdown" : "JSON"}
             </button>
             {result.format === "json" && (
               <button onClick={() => setShowSaveDialog(true)} className={styles.downloadButton}>
                 💾 Tallenna sovellukseen
-              </button>            )}
+              </button>
+            )}
           </div>
         </div>
       )}
